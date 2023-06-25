@@ -17,7 +17,9 @@ class App {
                 const cursor = document.querySelector('#cursor');
 
                 quote.innerHTML = '';
-                clearInterval(App.blinkInterval)
+                quote.removeEventListener('click', App.setQuote);
+
+                clearInterval(App.blinkInterval);
                 cursor.classList.remove('hidden');
 
                 print(quote, text, 60, () => {
@@ -27,7 +29,8 @@ class App {
                         } else {
                             cursor.classList.add('hidden');
                         }
-                    }, 500)
+                    }, 500);
+                    quote.addEventListener('click', App.setQuote);
                 });                
             });
     }
