@@ -1,0 +1,30 @@
+@import "vars";
+@import "mixins";
+
+body {
+    font-family: $fontFamily;
+    font-size: $fontSize;
+    background-image: linear-gradient(to bottom, $colorTop 50%, $colorBottom 100%);
+    min-height: 100vh;
+    @include flex(center, center);
+    color: $colorPrimary;
+}
+
+main {
+    padding: 0 1rem;
+    text-align: center;
+}
+
+#quote {
+    display: inline;
+    cursor: pointer;
+    transition: 1s ease;
+}
+
+#cursor {
+    background-color: $colorSecondary;
+
+    &.hidden {
+        opacity: 0;
+    }
+}
