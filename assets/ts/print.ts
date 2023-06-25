@@ -10,5 +10,6 @@ export function print(el: Element, text: string, ms?:number, callback?: any) {
         }
         el.innerHTML = el.innerHTML + text[index];
         index++;
+        el.scrollIntoView(false);
     }, (ms !== undefined ? 85 : ms));
 }
