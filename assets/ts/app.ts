@@ -1,38 +1,48 @@
 import { ApiService } from './api.service';
+import { Utils } from './utils';
 import { print } from './print';
 
 class App {
     private static blinkInterval: NodeJS.Timer;
+    private static quote: Element = document.querySelector('#quote');
+    private static cursor: Element = document.querySelector('#cursor');
+    private static audioPaths: Array<string> = [];
+    private static audioNum: number = 5;
     
     public static init(): void {
-        const quote = document.querySelector('#quote');
-        quote.addEventListener('click', App.setQuote);
+        App.quote.addEventListener('click', App.setQuote);
         App.setQuote();
+
+        for (let index = 0; index < App.audioNum; index++) {
+            App.audioPaths.push(`audio/key${index}.mp3`);            
+        }
+
+        console.log(App.audioPaths);
     }
 
     private static setQuote(): void {
-        ApiService.getFact()
-            .then(text => {
-                const quote = document.querySelector('#quote');
-                const cursor = document.querySelector('#cursor');
+        ApiService.getFact().then(text => {
+            App.quote.innerHTML = '';
+            App.quote.removeEventListener('click', App.setQuote);
 
-                quote.innerHTML = '';
-                quote.removeEventListener('click', App.setQuote);
+            clearInterval(App.blinkInterval);
+            App.cursor.classList.remove('hidden');
 
-                clearInterval(App.blinkInterval);
-                cursor.classList.remove('hidden');
-
-                print(quote, text, 60, () => {
-                    App.blinkInterval = setInterval(() => {
-                        if (cursor.classList.contains('hidden')) {
-                            cursor.classList.remove('hidden');
-                        } else {
-                            cursor.classList.add('hidden');
-                        }
-                    }, 500);
-                    quote.addEventListener('click', App.setQuote);
-                });                
-            });
+            print(App.quote, text, 60, () => {
+                const audioPath = Utils.arrayRandElement(App.audioPaths);
+                const keySound = new Audio(audioPath);
+                keySound.play();
+            }, () => {
+                App.blinkInterval = setInterval(() => {
+                    if (App.cursor.classList.contains('hidden')) {
+                        App.cursor.classList.remove('hidden');
+                    } else {
+                        App.cursor.classList.add('hidden');
+                    }
+                }, 500);
+                App.quote.addEventListener('click', App.setQuote);
+            });             
+        });
     }
 }
 
